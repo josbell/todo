@@ -2,7 +2,11 @@ import React from "react";
 
 function App() {
   return (
-    <h1>Hello Josbell</h1>
+    <main>
+      <h1 data-testid="title">TODO List</h1>
+      <input type="text"></input>
+      <button>Add Todo</button>
+    </main>
   )
 }
 
