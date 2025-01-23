@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-
 function TodoList({todos} : { todos?: string[]}) {
   const [inputValue, setInputValue] = useState('');
   const [todoList, setTodoList] = useState<string[]>(todos || []);
