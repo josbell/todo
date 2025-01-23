@@ -1,11 +1,16 @@
 import React from "react";
+import TodoList from './components/TodoList'
 
-function App() {
+interface AppTodos {
+  todos?: string[]
+}
+
+
+function App({ todos }: AppTodos) {
+
   return (
-    <main>
-      <h1 data-testid="title" className="text-red">TODO List</h1>
-      <input type="text" data-testid="input-add"></input>
-      <button data-testid="button-add" className="border-red-500 py-2 px-4">Add Todo</button>
+    <main className="flex flex-col w-1/2 py-5 px-10">
+      <TodoList todos={todos || ['todo1', 'todo2', 'todo3']} />
     </main>
   )
 }
