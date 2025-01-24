@@ -1,8 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-function TodoList({todos} : { todos?: string[]}) {
+
+function TodoList() {
   const [inputValue, setInputValue] = useState('');
-  const [todoList, setTodoList] = useState<string[]>(todos || []);
+  const [todoList, setTodoList] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3000')
+      .then(response => response.json())
+      .then(data => setTodoList(data));
+    }, []);
   
   const todoListHTML = todoList?.map( todo => (
     <li 
