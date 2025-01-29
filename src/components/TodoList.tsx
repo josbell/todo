@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
+import TodoListItem from "./TodoListItem";
 
 export interface Todo {
   _id: string,
   title: string;
 }
-
 
 function TodoList() {
   const [inputValue, setInputValue] = useState('');
@@ -18,13 +18,7 @@ function TodoList() {
     }, []);
   
   const todoListHTML = todoList?.map( todo => (
-    <li 
-      key={`li-${todo._id}`} 
-      data-testid={`li-${todo.title}`}
-      className="bg-gray-100 p-4 rounded m-2"
-    >
-      {todo.title}
-    </li>
+    <TodoListItem key={`li-${todo._id}`} todo={todo} deleteTodo={deleteTodo} />
   ))
 
   function addTodo() {
@@ -39,11 +33,9 @@ function TodoList() {
         body: JSON.stringify(newTodo)
       })
       .then(response => {
-        console.log("response: ", response)
         return response.json()
       })
       .then((data: Todo) => {              
-        console.log("data: ", data)
         setTodoList([...todoList, data])
         setInputValue('');
       })
@@ -54,8 +46,39 @@ function TodoList() {
     }
   }
 
+  async function deleteTodo(id: string) {
+    try {
+      const response = await fetch(`http://localhost:3000/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      if (data && data.message) {
+        setTodoList(prevTodos => prevTodos.filter(todo => todo._id !== id));
+        alert(data.message);
+      } else {
+        throw new Error(`Error: No data received`);
+      }
+
+    } catch (error) {
+      console.error('Error deleting todo:', error);
+      handleError();
+    }
+  }
+
   function onInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(event.target.value);
+  }
+
+  function handleError() {
+    alert('todo was not deleted, try again later')
   }
 
   return (
