@@ -42,7 +42,7 @@ function TodoList() {
         console.log("response: ", response)
         return response.json()
       })
-      .then((data: Todo) => {
+      .then((data: Todo) => {              
         console.log("data: ", data)
         setTodoList([...todoList, data])
         setInputValue('');
