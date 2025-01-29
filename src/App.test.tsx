@@ -3,12 +3,13 @@ import { fireEvent, render, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from './App';
 
+
 describe('Rendering', () => {
 
   beforeEach(() => {
     globalThis.fetch = jest.fn(() =>
       Promise.resolve({
-        json: () => Promise.resolve(['todo1', 'todo2'])
+        json: () => Promise.resolve([{ title: 'todo1', _id: 'todo1ID'}, { title: 'todo2', _id: 'todo2ID'}])
       })
     ) as jest.Mock;
   })

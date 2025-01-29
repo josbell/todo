@@ -1,30 +1,56 @@
 import React, { useState, useEffect } from "react";
 
+export interface Todo {
+  _id: string,
+  title: string;
+}
+
 
 function TodoList() {
   const [inputValue, setInputValue] = useState('');
-  const [todoList, setTodoList] = useState<string[]>([]);
+  const [todoList, setTodoList] = useState<Todo[]>([]);
 
   useEffect(() => {
     fetch('http://localhost:3000')
       .then(response => response.json())
-      .then(data => setTodoList(data));
+      .then((data: Todo[]) => setTodoList(data))
+      .catch( () => setTodoList([]) );
     }, []);
   
   const todoListHTML = todoList?.map( todo => (
     <li 
-      key={`li-${todo}`} 
-      data-testid={`li-${todo}`}
+      key={`li-${todo._id}`} 
+      data-testid={`li-${todo.title}`}
       className="bg-gray-100 p-4 rounded m-2"
     >
-      {todo}
+      {todo.title}
     </li>
   ))
 
   function addTodo() {
     if (inputValue) {
-      setTodoList([...todoList, inputValue]);
-      setInputValue('');
+      const newTodo = { title: inputValue }
+      
+      fetch('http://localhost:3000/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newTodo)
+      })
+      .then(response => {
+        console.log("response: ", response)
+        return response.json()
+      })
+      .then((data: Todo) => {
+        console.log("data: ", data)
+        setTodoList([...todoList, data])
+        setInputValue('');
+      })
+      .catch( error => {
+        alert('Failed to create todo. Sorry bro. We kinda winging it out here')
+        console.error(error)
+      })
     }
   }
 
