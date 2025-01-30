@@ -1,17 +1,22 @@
 import React from 'react';
-import { fireEvent, render, screen, act } from '@testing-library/react';
+import { fireEvent, render, screen, act, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from './App';
-
 
 describe('Rendering', () => {
 
   beforeEach(() => {
-    globalThis.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () => Promise.resolve([{ title: 'todo1', _id: 'todo1ID'}, { title: 'todo2', _id: 'todo2ID'}])
-      })
-    ) as jest.Mock;
+    globalThis.fetch = jest.fn((url, options) => {
+      if (options?.method === 'POST') {
+        return Promise.resolve({ json: () => Promise.resolve( {_id: 'mock-id', title: 'New Todo Item'} ) })
+      } else if (options?.method === 'DELETE') {
+        return Promise.resolve ({ 
+          ok: true,
+          json: () => Promise.resolve( {message: 'mock-messaage'} )
+        })
+      }
+      return Promise.resolve({ json: () => Promise.resolve([{ title: 'todo1', _id: 'todo1ID'}, { title: 'todo2', _id: 'todo2ID'}]) })
+    }) as jest.Mock;
   })
 
   afterEach(() => {
@@ -43,8 +48,8 @@ describe('Rendering', () => {
     });
 
     const todoList = await screen.findByTestId('todo-list');
-    const todo1 = await screen.findByTestId('li-todo1');
-    const todo2 = await screen.findByTestId('li-todo2');
+    const todo1 = await screen.findByTestId('li-todo1ID');
+    const todo2 = await screen.findByTestId('li-todo2ID');
 
     expect(todoList).toBeInTheDocument();
     expect(todo1).toBeInTheDocument();
@@ -65,8 +70,23 @@ describe('Rendering', () => {
       fireEvent.click(button);
     });
 
-    const newTodo = screen.queryByTestId('li-New Todo Item');
+    const newTodo = screen.queryByTestId('li-mock-id');
     expect(newTodo).toBeInTheDocument();
+  })
+
+  test('delete todo', async () => {
+    await act(async () => {
+      render(<App />);
+    });
+
+    const todoItem = screen.queryByTestId('li-todo1ID') as HTMLElement;
+    const deleteButton = within(todoItem).getByRole('button');
+
+    await act(async () => {
+      fireEvent.click(deleteButton);
+    });
+
+    expect(todoItem).not.toBeInTheDocument();
   })
 
 })

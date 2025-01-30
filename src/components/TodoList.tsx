@@ -62,7 +62,6 @@ function TodoList() {
       const data = await response.json();
       if (data && data.message) {
         setTodoList(prevTodos => prevTodos.filter(todo => todo._id !== id));
-        alert(data.message);
       } else {
         throw new Error(`Error: No data received`);
       }
