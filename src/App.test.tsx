@@ -14,6 +14,8 @@ describe('Rendering', () => {
           ok: true,
           json: () => Promise.resolve( {message: 'mock-messaage'} )
         })
+      } else if (options?.method === 'PATCH') {
+        return Promise.resolve({ json: () => Promise.resolve( { title: 'todo1', _id: 'todo1ID', isCompleted: true }) })
       }
       return Promise.resolve({ json: () => Promise.resolve([{ title: 'todo1', _id: 'todo1ID'}, { title: 'todo2', _id: 'todo2ID'}]) })
     }) as jest.Mock;
@@ -87,6 +89,29 @@ describe('Rendering', () => {
     });
 
     expect(todoItem).not.toBeInTheDocument();
+  })
+
+  test('complete todo', async () => {
+    await act(async () => {
+      render(<App />);
+    });
+
+    const todoItem = screen.queryByTestId('li-todo1ID') as HTMLElement;
+    const checkbox = within(todoItem).getByRole('checkbox');
+
+    await act(async () => {
+      fireEvent.click(checkbox);
+    });
+
+    expect(checkbox).toBeChecked();
+    expect(todoItem).toHaveClass('line-through'); 
+    expect(fetch).toHaveBeenCalledWith('http://localhost:3000/todo1ID', {
+      method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title: 'todo1', isCompleted: true})
+    })
   })
 
 })

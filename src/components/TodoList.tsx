@@ -4,6 +4,7 @@ import TodoListItem from "./TodoListItem";
 export interface Todo {
   _id: string,
   title: string;
+  isCompleted: boolean;
 }
 
 function TodoList() {
@@ -18,7 +19,7 @@ function TodoList() {
     }, []);
   
   const todoListHTML = todoList?.map( todo => (
-    <TodoListItem key={`li-${todo._id}`} todo={todo} deleteTodo={deleteTodo} />
+    <TodoListItem key={`li-${todo._id}`} todo={todo} deleteTodo={deleteTodo} toggleIsCompletedFlag={toggleIsCompletedFlag}/>
   ))
 
   function addTodo() {
@@ -46,6 +47,44 @@ function TodoList() {
     }
   }
 
+  async function toggleIsCompletedFlag(todo: Todo) {
+    const { _id, ...rest} = todo; // Removing _id to avoid mutating in DB
+    const updatedTodo = {...rest, isCompleted: !todo.isCompleted };
+
+    try {
+      if (!todo) return;
+      const response = await fetch(`http://localhost:3000/${_id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedTodo)
+      })
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data: Todo = await response.json();
+      if (data && data.isCompleted === updatedTodo.isCompleted) {
+
+        setTodoList(prevTodos => prevTodos.map(prevTodo => {
+          if (prevTodo._id === _id) {
+            return { ...prevTodo, isCompleted: updatedTodo.isCompleted }
+          }
+          return prevTodo;
+        }));
+
+      } else {
+        throw new Error(`Error: Data not received or mutated`);
+      }
+
+    } catch (error) {
+      console.error('Error updating todo:', error);
+      handleUpdateError();
+    }
+  }
+
   async function deleteTodo(id: string) {
     try {
       const response = await fetch(`http://localhost:3000/${id}`, {
@@ -68,7 +107,7 @@ function TodoList() {
 
     } catch (error) {
       console.error('Error deleting todo:', error);
-      handleError();
+      handleDeleteError();
     }
   }
 
@@ -76,8 +115,12 @@ function TodoList() {
     setInputValue(event.target.value);
   }
 
-  function handleError() {
+  function handleDeleteError() {
     alert('todo was not deleted, try again later')
+  }
+
+  function handleUpdateError() {
+    alert('todo was not updated, try again later')
   }
 
   return (
