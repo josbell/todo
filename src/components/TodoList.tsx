@@ -12,21 +12,29 @@ function TodoList() {
   const [todoList, setTodoList] = useState<Todo[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000')
+    fetch('http://localhost:3000/todo')
       .then(response => response.json())
       .then((data: Todo[]) => setTodoList(data))
       .catch( () => setTodoList([]) );
     }, []);
   
   const todoListHTML = todoList?.map( todo => (
-    <TodoListItem key={`li-${todo._id}`} todo={todo} deleteTodo={deleteTodo} toggleIsCompletedFlag={toggleIsCompletedFlag}/>
+    <TodoListItem 
+      key={`li-${todo._id}`} 
+      todo={todo} 
+      deleteTodo={deleteTodo} 
+      toggleIsCompletedFlag={toggleIsCompletedFlag}
+    />
   ))
 
   function addTodo() {
     if (inputValue) {
-      const newTodo = { title: inputValue }
+      const newTodo: Omit<Todo,"_id"> = { 
+        title: inputValue, 
+        isCompleted: false 
+      }
       
-      fetch('http://localhost:3000/', {
+      fetch('http://localhost:3000/todo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,7 +45,7 @@ function TodoList() {
         return response.json()
       })
       .then((data: Todo) => {              
-        setTodoList([...todoList, data])
+        setTodoList( prevTodos => [...prevTodos, data])
         setInputValue('');
       })
       .catch( error => {
@@ -53,7 +61,7 @@ function TodoList() {
 
     try {
       if (!todo) return;
-      const response = await fetch(`http://localhost:3000/${_id}`, {
+      const response = await fetch(`http://localhost:3000/todo/${_id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +95,7 @@ function TodoList() {
 
   async function deleteTodo(id: string) {
     try {
-      const response = await fetch(`http://localhost:3000/${id}`, {
+      const response = await fetch(`http://localhost:3000/todo/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -97,7 +105,7 @@ function TodoList() {
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
-
+      console.log(response)
       const data = await response.json();
       if (data && data.message) {
         setTodoList(prevTodos => prevTodos.filter(todo => todo._id !== id));

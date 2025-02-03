@@ -105,7 +105,7 @@ describe('Rendering', () => {
 
     expect(checkbox).toBeChecked();
     expect(todoItem).toHaveClass('line-through'); 
-    expect(fetch).toHaveBeenCalledWith('http://localhost:3000/todo1ID', {
+    expect(fetch).toHaveBeenCalledWith('http://localhost:3000/todo/todo1ID', {
       method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
