@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TodoListItem from "./TodoListItem";
+import Confetti from "react-confetti"
 
 export interface Todo {
   _id: string;
@@ -10,6 +11,7 @@ export interface Todo {
 function TodoList() {
   const [inputValue, setInputValue] = useState('');
   const [todoList, setTodoList] = useState<Todo[]>([]);
+  const [congrats, setCongrats] = useState(false)
 
   useEffect(() => {
     fetch('http://localhost:3000/todo')
@@ -53,9 +55,20 @@ function TodoList() {
     }
   }
 
+  function updateCongrats(updatedTodo: Omit<Todo, "_id">) {
+    if (updatedTodo.isCompleted) {
+      setCongrats(true)
+      setTimeout( () => {
+        setCongrats(false);
+      }, 4000);
+    }
+  }
+
   async function toggleIsCompletedFlag(todo: Todo) {
     const { _id, ...rest } = todo; // Removing _id to avoid mutating in DB
     const updatedTodo = { ...rest, isCompleted: !todo.isCompleted };
+
+    updateCongrats(updatedTodo) 
 
     try {
       if (!todo) return;
@@ -127,20 +140,28 @@ function TodoList() {
 
   return (
     <>
-      <h1 data-testid="title" className="text-2xl font-bold mb-4">TODO List</h1>
-      <div className="flex w-full justify-evenly mb-4">
+      {congrats && 
+        <Confetti 
+          recycle={false} 
+          numberOfPieces={400} 
+          gravity={0.170}
+          initialVelocityY={4.5}
+        /> 
+      }
+      <h1 data-testid="title" className="text-2xl font-bold mb-4 text-center">TODO List</h1>
+      <div className="flex flex-col sm:flex-row w-full justify-evenly mb-4">
         <input 
           type="text" 
           data-testid="input-add" 
           value={inputValue} 
           onChange={onInputChange} 
-          className="mx-1 py-2 px-4 border border-gray-300 rounded-lg flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="mx-1 py-2 px-4 border border-gray-300 rounded-lg flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 sm:mb-0"
           placeholder="Add a new todo"
         />
         <button 
           data-testid="button-add" 
           onClick={addTodo} 
-          className="ml-2 py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="md:ml-2 mx-1 py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           Add Todo
         </button>
