@@ -9,9 +9,17 @@ export interface Todo {
 }
 
 function TodoList() {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState<string>('');
   const [todoList, setTodoList] = useState<Todo[]>([]);
-  const [congrats, setCongrats] = useState(false)
+  const [congrats, setCongrats] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (congrats && todoList.some( todo => !todo.isCompleted)){
+      setCongrats(false)
+    } else if (!congrats && todoList.length && todoList.every( todo => todo.isCompleted )) {
+      setCongrats(true)
+    }
+  }, [todoList, congrats])
 
   useEffect(() => {
     fetch('http://localhost:3000/todo')
@@ -55,20 +63,18 @@ function TodoList() {
     }
   }
 
-  function updateCongrats(updatedTodo: Omit<Todo, "_id">) {
-    if (updatedTodo.isCompleted) {
+  function updateCongrats(updatedTodo: Todo) {
+    const allCompleted = updatedTodo.isCompleted && todoList.filter( todo => todo._id !== updatedTodo._id).every( todo => todo.isCompleted )
+    if (allCompleted) {
       setCongrats(true)
-      setTimeout( () => {
-        setCongrats(false);
-      }, 4000);
-    }
+    }   
   }
 
   async function toggleIsCompletedFlag(todo: Todo) {
-    const { _id, ...rest } = todo; // Removing _id to avoid mutating in DB
-    const updatedTodo = { ...rest, isCompleted: !todo.isCompleted };
+    todo.isCompleted = !todo.isCompleted
 
-    updateCongrats(updatedTodo) 
+    const { _id, ...rest } = todo; // Removing _id to avoid mutating in DB
+    const updatedTodo = { ...rest };
 
     try {
       if (!todo) return;
@@ -140,7 +146,8 @@ function TodoList() {
 
   return (
     <>
-      {congrats && 
+      { congrats
+        && 
         <Confetti 
           recycle={false} 
           numberOfPieces={400} 
