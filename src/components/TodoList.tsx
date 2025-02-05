@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TodoListItem from "./TodoListItem";
 import Confetti from "react-confetti"
+import { getHttp, postHttp, patchHttp, deleteHttp } from "../services/httpService";
 
 export interface Todo {
   _id: string;
@@ -22,8 +23,7 @@ function TodoList() {
   }, [todoList, congrats])
 
   useEffect(() => {
-    fetch('http://localhost:3000/todo')
-      .then(response => response.json())
+    getHttp<Todo[]>('todo')
       .then((data: Todo[]) => setTodoList(data))
       .catch(() => setTodoList([]));
   }, []);
@@ -44,14 +44,7 @@ function TodoList() {
         isCompleted: false 
       };
       
-      fetch('http://localhost:3000/todo', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newTodo)
-      })
-      .then(response => response.json())
+      postHttp<Todo>('todo', newTodo)
       .then((data: Todo) => {              
         setTodoList(prevTodos => [...prevTodos, data]);
         setInputValue('');
@@ -78,19 +71,8 @@ function TodoList() {
 
     try {
       if (!todo) return;
-      const response = await fetch(`http://localhost:3000/todo/${_id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedTodo)
-      });
+      const data: Todo = await patchHttp<Todo>('todo', _id, updatedTodo)
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-
-      const data: Todo = await response.json();
       if (data && data.isCompleted === updatedTodo.isCompleted) {
         setTodoList(prevTodos => prevTodos.map(prevTodo => {
           if (prevTodo._id === _id) {
@@ -109,18 +91,8 @@ function TodoList() {
 
   async function deleteTodo(id: string) {
     try {
-      const response = await fetch(`http://localhost:3000/todo/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
+      const data = await deleteHttp<{message: string}>('todo', id)
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
       if (data && data.message) {
         setTodoList(prevTodos => prevTodos.filter(todo => todo._id !== id));
       } else {
