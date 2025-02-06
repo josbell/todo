@@ -8,7 +8,7 @@ export async function getHttp<T>(endpoint: string): Promise<T> {
 }
 
 //post
-export async function postHttp<T>(endpoint: string, body: {}): Promise<T> {
+export async function postHttp<T>(endpoint: string, body: object): Promise<T> {
   const options = {
     method: 'POST',
     headers: HEADERS,
@@ -19,7 +19,7 @@ export async function postHttp<T>(endpoint: string, body: {}): Promise<T> {
 }
 
 //patch
-export async function patchHttp<T>(endpoint: string, id: string, body: {}): Promise<T> {
+export async function patchHttp<T>(endpoint: string, id: string, body: object): Promise<T> {
   const options = {
     method: 'PATCH',
     headers: HEADERS,

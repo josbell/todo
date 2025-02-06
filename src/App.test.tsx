@@ -1,16 +1,19 @@
 import React from 'react';
 import { fireEvent, render, screen, act, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { Mock } from 'vitest'
 import App from './App';
 
-
+/**
+ * @vitest-environment jsdom
+ */
 
 describe('Rendering', () => {
 
-  beforeAll(() => window.alert = jest.fn())
+  beforeAll(() => window.alert = vi.fn())
 
   beforeEach(() => {
-    globalThis.fetch = jest.fn((url, options) => {
+    globalThis.fetch = vi.fn((url, options) => {
       if (options?.method === 'POST') {
         return Promise.resolve({ json: () => Promise.resolve( {_id: 'mock-id', title: 'New Todo Item'} ) })
       } else if (options?.method === 'DELETE') {
@@ -22,11 +25,11 @@ describe('Rendering', () => {
         return Promise.resolve({ json: () => Promise.resolve( { title: 'todo1', _id: 'todo1ID', isCompleted: true }) })
       }
       return Promise.resolve({ json: () => Promise.resolve([{ title: 'todo1', _id: 'todo1ID'}, { title: 'todo2', _id: 'todo2ID'}]) })
-    }) as jest.Mock;
+    }) as Mock;
   })
 
   afterEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   })
 
   test('render h1 with text', async() => {

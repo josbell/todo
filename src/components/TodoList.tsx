@@ -56,13 +56,6 @@ function TodoList() {
     }
   }
 
-  function updateCongrats(updatedTodo: Todo) {
-    const allCompleted = updatedTodo.isCompleted && todoList.filter( todo => todo._id !== updatedTodo._id).every( todo => todo.isCompleted )
-    if (allCompleted) {
-      setCongrats(true)
-    }   
-  }
-
   async function toggleIsCompletedFlag(todo: Todo) {
     todo.isCompleted = !todo.isCompleted
 

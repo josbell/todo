@@ -3,7 +3,7 @@
     "target": "es6",
     "module": "esnext",
     "lib": ["dom", "es6"],
-    "types": ["@testing-library/jest-dom"],
+    "types": ["vitest/globals"],
     "allowJs": true,
     "jsx": "react",
     "outDir": "./dist",
