@@ -8,7 +8,9 @@
     "build": "vite build",
     "serve": "vite preview",
     "test": "vitest",
-    "lint": "eslint --fix"
+    "lint": "eslint --fix",
+    "cy:open": "cypress open",
+    "test:e2e": "cypress run --browser chrome"
   },
   "repository": {
     "type": "git",
@@ -26,6 +28,7 @@
     "@testing-library/react": "^16.2.0",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
+    "cypress": "^14.0.2",
     "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-node": "^11.1.0",

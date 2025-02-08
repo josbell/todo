@@ -24,6 +24,7 @@ export default function TodoListItem({ todo, deleteTodo, toggleIsCompletedFlag }
         <span>{todo.title}</span>
       </div>
       <button 
+        data-test-id={todo.title}
         onClick={() => deleteTodo(todo._id)} 
         className="text-gray-600 hover:text-gray-800 focus:outline-none"
       >
