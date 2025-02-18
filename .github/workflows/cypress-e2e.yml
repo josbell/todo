@@ -59,13 +59,13 @@ jobs:
         env:
           MONGO_URI: mongodb://localhost:27017/test
           PORT: 3000
-      
-      - name: Start Frontend Server
-        run: npm run start
-
-      - name: Wait for Servers to Start
+        
+      - name: Start Frontend
         run: |
-          sleep 10 # Give Servers time to start
+          nohup npm run start -- --host &
+
+      - name: Wait for Frontend & Backend to be Ready
+        run: npx wait-on http://localhost:5173 http://localhost:3000
 
       - name: Run Cypress Tests
         run: npm run test:e2e:cicd
