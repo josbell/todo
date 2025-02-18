@@ -39,7 +39,7 @@ jobs:
       - name: Checkout API Repo
         uses: actions/checkout@v4
         with:
-          repository: marcomolina11/todos-mongo-api.git
+          repository: marcomolina11/todos-mongo-api
           path: backend
 
       - name: Install API Dependencies
