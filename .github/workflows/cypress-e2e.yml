@@ -47,6 +47,11 @@ jobs:
           cd backend
           npm install
 
+      - name: Seed the db
+        run: |
+          cd backend
+          node seed.js
+
       - name: Start API Server
         run: |
           cd backend
