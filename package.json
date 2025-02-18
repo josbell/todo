@@ -10,7 +10,8 @@
     "test": "vitest",
     "lint": "eslint --fix",
     "cy:open": "cypress open",
-    "test:e2e": "cypress run --browser chrome"
+    "test:e2e": "cypress run --browser chrome",
+    "test:e2e:cicd": "cypress run --headless --browser chrome"
   },
   "repository": {
     "type": "git",

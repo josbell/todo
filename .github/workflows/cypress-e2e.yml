@@ -1,0 +1,65 @@
+name: Cypress E2E Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "echo 'db.runCommand({ serverStatus: 1 })' | mongosh localhost:27017/test --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Frontend Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+            node-version: 23
+            cache: 'npm'
+      
+      - name: Install Frontend Dependencies
+        run: npm install
+  
+      - name: Checkout API Repo
+        uses: actions/checkout@v4
+        with:
+          repository: marcomolina11/todos-mongo-api.git
+          path: backend
+
+      - name: Install API Dependencies
+        run: |
+          cd backend
+          npm install
+
+      - name: Start API Server
+        run: |
+          cd backend
+          nohup npm start &  # Runs API in background
+        env:
+          MONGO_URI: mongodb://localhost:27017/test
+          PORT: 3000
+
+      - name: Wait for API to Start
+        run: |
+          sleep 10 # Give API time to start
+
+      - name: Run Cypress Tests
+        run: npm run test:e2e:cicd
+        env:
+          API_URL: http://localhost:3000
