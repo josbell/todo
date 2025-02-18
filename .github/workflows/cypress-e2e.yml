@@ -64,8 +64,11 @@ jobs:
         run: |
           nohup npm run start -- --host &
 
-      - name: Wait for Frontend & Backend to be Ready
-        run: npx wait-on http://localhost:5173 http://localhost:3000
+      - name: Wait for Frontend to be Ready
+        run: npx wait-on http://localhost:5173 
+
+      - name: Wait for Backend to be Ready
+        run: npx wait-on http://localhost:3000
 
       - name: Run Cypress Tests
         run: npm run test:e2e:cicd
