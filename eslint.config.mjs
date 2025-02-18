@@ -19,7 +19,6 @@ export default [
   {
     ignores: [
       '**/dist/*',
-      '**/cypress/*'
     ]
   }
 ];
