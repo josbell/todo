@@ -1,0 +1,43 @@
+name: CI/CD Workflow
+
+# Run this workflow on every push or pull request to the main branch
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 23
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Linting
+      - name: Run ESLint
+        run: npm run lint
+
+      # Run tests
+      - name: Run tests
+        run: npm test
+
+      # Optional: Build your app (for front-end apps)
+      - name: Build project
+        run: npm run build

@@ -1,0 +1,53 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "test": "vitest",
+    "lint": "eslint --fix",
+    "cy:open": "cypress open",
+    "test:e2e": "cypress run --browser chrome"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josbell/todo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/josbell/todo/issues"
+  },
+  "homepage": "https://github.com/josbell/todo#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "cypress": "^14.0.2",
+    "eslint": "^9.19.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.2.2",
+    "eslint-plugin-react": "^7.37.4",
+    "globals": "^15.14.0",
+    "jsdom": "^26.0.0",
+    "prettier": "^3.4.2",
+    "tailwindcss": "^4.0.3",
+    "ts-node": "^10.9.2",
+    "typescript-eslint": "^8.23.0",
+    "vite": "^6.0.10",
+    "vitest": "^3.0.5"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.0.3",
+    "react": "^19.0.0",
+    "react-confetti": "^6.2.2",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.4.0"
+  }
+}
