@@ -18,7 +18,7 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "echo 'db.runCommand({ serverStatus: 1 })' | mongosh localhost:27017/test --quiet"
+          --health-cmd "echo 'db.runCommand({ serverStatus: 1 })' | mongosh localhost:27017/todosDB --quiet"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -57,8 +57,11 @@ jobs:
           cd backend
           nohup npm start &  # Runs API in background
         env:
-          MONGO_URI: mongodb://localhost:27017/test
+          MONGO_URI: mongodb://localhost:27017
           PORT: 3000
+
+      - name: Wait for Backend to be Ready
+        run: npx wait-on http://localhost:3000
         
       - name: Start Frontend
         run: |
@@ -66,9 +69,6 @@ jobs:
 
       - name: Wait for Frontend to be Ready
         run: npx wait-on http://localhost:5173 
-
-      - name: Wait for Backend to be Ready
-        run: npx wait-on http://localhost:3000
 
       - name: Run Cypress Tests
         run: npm run test:e2e:cicd
