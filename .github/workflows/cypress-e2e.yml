@@ -61,7 +61,7 @@ jobs:
           PORT: 3000
 
       - name: Wait for Backend to be Ready
-        run: npx wait-on http://localhost:3000
+        run: sleep 10
         
       - name: Start Frontend
         run: |
