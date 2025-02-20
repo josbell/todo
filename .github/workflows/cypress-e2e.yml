@@ -30,12 +30,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-            node-version: 23
-            cache: 'npm'
-      
+          node-version: 23
+          cache: "npm"
+
       - name: Install Frontend Dependencies
         run: npm install
-  
+
       - name: Checkout API Repo
         uses: actions/checkout@v4
         with:
@@ -61,14 +61,14 @@ jobs:
           PORT: 3000
 
       - name: Wait for Backend to be Ready
-        run: sleep 10
-        
+        run: npx wait-on tcp:127.0.0.1:3000
+
       - name: Start Frontend
         run: |
           nohup npm run start -- --host &
 
       - name: Wait for Frontend to be Ready
-        run: npx wait-on http://localhost:5173 
+        run: npx wait-on http://localhost:5173
 
       - name: Run Cypress Tests
         run: npm run test:e2e:cicd
