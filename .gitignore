@@ -2,8 +2,6 @@
 logs
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Runtime data
 pids
@@ -39,46 +37,9 @@ public/favicon.ico   # Example - ignore if customized and part of the repo
 .env.local
 .env.*.local
 
-# Next.js build output
-.next/
-
-# Nuxt.js build output
-.nuxt/
-
-# Gatsby files
-.cache/
-public/
-
-# Gridsome files
-.cache/
-
-# Vuepress build output
-.vuepress/dist
-
-# Serverless Framework files
-.serverless/
-
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
-
 # VS Code specific files
 .vscode/
 *.code-workspace
-
-# SASS cache
-.sass-cache/
-
-# Nuxt.js generated files
-dist/
-
-# Storybook files
-.storybook-out/
 
 # MacOS system files
 .DS_Store
@@ -100,19 +61,6 @@ dist/
 .idea/
 *.iml
 
-# Yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-
-# Lockfiles
-package-lock.json
-yarn.lock
-.pnpm-debug.log
-
 # ESLint and Prettier
 .eslintcache
 .prettierignore
@@ -123,21 +71,8 @@ yarn.lock
 *.lcov
 .nyc_output/
 
-# Parcel-bundler cache
-.cache, .parcel-cache
-
 # TypeScript
 *.tsbuildinfo
-
-# React Native
-*.expo
-.expo-shared
-
-# Firebase local cache
-.firebase/
-
-# AWS SAM
-.aws-sam/
 
 # JetBrains
 .idea/
