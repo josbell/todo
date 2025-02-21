@@ -12,17 +12,6 @@ jobs:
   e2e-tests:
     runs-on: ubuntu-latest
 
-    services:
-      mongo:
-        image: mongo:latest
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd "echo 'db.runCommand({ serverStatus: 1 })' | mongosh localhost:27017/todosDB --quiet"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout Frontend Repo
         uses: actions/checkout@v4
@@ -42,23 +31,10 @@ jobs:
           repository: marcomolina11/todos-mongo-api
           path: backend
 
-      - name: Install API Dependencies
+      - name: Start Backend with Docker Compose
         run: |
           cd backend
-          npm install
-
-      - name: Seed the db
-        run: |
-          cd backend
-          node seed.js
-
-      - name: Start API Server
-        run: |
-          cd backend
-          nohup npm start &  # Runs API in background
-        env:
-          MONGO_URI: mongodb://localhost:27017
-          PORT: 3000
+          docker compose up -d
 
       - name: Wait for Backend to be Ready
         run: npx wait-on tcp:127.0.0.1:3000
@@ -74,3 +50,9 @@ jobs:
         run: npm run test:e2e:cicd
         env:
           API_URL: http://localhost:3000
+
+      - name: Stop Containers
+        if: always()
+        run: |
+          cd backend
+          docker compose down
