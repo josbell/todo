@@ -31,10 +31,12 @@ jobs:
           repository: marcomolina11/todos-mongo-api
           path: backend
 
+      - name: List Files in Backend Directory
+        run: ls -la backend
+
       - name: Start Backend with Docker Compose
-        run: |
-          cd backend
-          docker compose up -d
+        working-directory: backend
+        run: docker compose up -d
 
       - name: Wait for Backend to be Ready
         run: npx wait-on tcp:127.0.0.1:3000
