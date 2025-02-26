@@ -1,4 +1,4 @@
-name: Cypress E2E Tests
+name: Backend Initiated E2E Tests
 
 on:
   repository_dispatch:
